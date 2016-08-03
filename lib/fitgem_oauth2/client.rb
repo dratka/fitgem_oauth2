@@ -46,6 +46,7 @@ module FitgemOauth2
         request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         request.params['grant_type'] = 'refresh_token'
         request.params['refresh_token'] = refresh_token
+        request.params['expires_in'] = 60
       end
       JSON.parse(response.body)
     end
