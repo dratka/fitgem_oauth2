@@ -113,6 +113,16 @@ module FitgemOauth2
       get_call("user/#{user_id}/activities/list.json")
     end
 
+    # retrieves activity list for the user
+    def activity_list_on_date(date)
+      get_call(
+        "user/#{user_id}/activities/list.json?
+        afterDate=#{date.beginning_of_day.strftime('%Y-%m-%dT%H:%M:%S')}&
+        offset=0&limit=20&sort=asc"
+      )
+        # "user/#{user_id}/activities/list.json?beforeDate=#{date.end_of_day.strftime('%Y:%m:%dT%H:%M:%S')}&afterDate=#{date.beginning_of_day.strftime('%Y:%m:%dT%H:%M:%S')}"
+    end
+
     # retrieves activity list in the tcx format
     def activity_tcx(id)
       get_call("user/#{user_id}/activities/#{id}.tcx")
