@@ -24,6 +24,7 @@ module FitgemOauth2
     attr_reader :client_secret
     attr_reader :token
     attr_reader :user_id
+    attr_reader :unit_system
 
     def initialize(opts)
       missing = [:client_id, :client_secret, :token] - opts.keys
@@ -35,7 +36,7 @@ module FitgemOauth2
       @client_secret = opts[:client_secret]
       @token = opts[:token]
       @user_id = (opts[:user_id] || DEFAULT_USER_ID)
-
+      @unit_system = opts[:unit_system]
       @connection = Faraday.new('https://api.fitbit.com')
     end
 
@@ -75,6 +76,7 @@ module FitgemOauth2
     def set_headers(request)
       request.headers['Authorization'] = "Bearer #{token}"
       request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+      request.headers['Accept-Language'] = unit_system unless unit_system == nil
     end
 
     def parse_response(response)
@@ -86,6 +88,8 @@ module FitgemOauth2
             body = {body: body} if body.is_a?(Array)
             body.merge!(response.headers.slice(*headers_to_keep))
           },
+          201 => lambda { },
+          204 => lambda { },
           400 => lambda { raise FitgemOauth2::BadRequestError },
           401 => lambda { raise FitgemOauth2::UnauthorizedError },
           403 => lambda { raise FitgemOauth2::ForbiddenError },
