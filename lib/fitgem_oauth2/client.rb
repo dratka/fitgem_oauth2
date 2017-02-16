@@ -52,6 +52,12 @@ module FitgemOauth2
       JSON.parse(response.body)
     end
 
+    def get_http_call(url)
+      url.slice! 'https://api.fitbit.com/'
+      response = connection.get(url) { |request| set_headers(request) }
+      parse_response(response)
+    end
+
     def get_call(url)
       url = "#{API_VERSION}/#{url}"
       response = connection.get(url) { |request| set_headers(request) }
